@@ -29,7 +29,7 @@
 <script>
 export default {
   mounted() {
-    this.$axios.$get('/wp-json/wp/v2/users').then((res) => console.log(res))
+    this.$axios.$get('/wp-json/wc/v3/products').then((res) => console.log(res))
   },
 }
 </script>
