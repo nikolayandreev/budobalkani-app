@@ -1,11 +1,17 @@
 <template>
   <div>
+    <Navigation />
     <Nuxt />
   </div>
 </template>
 
 <script>
+import Navigation from '~/components/base/Navigation'
+
 export default {
+  components: {
+    Navigation,
+  },
   mounted() {},
 }
 </script>

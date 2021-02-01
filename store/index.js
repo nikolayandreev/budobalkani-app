@@ -15,6 +15,9 @@ export const mutations = {
   setBrands(state, payload) {
     state.brands = payload
   },
+  setTags(state, payload) {
+    state.tags = payload
+  }
 }
 
 export const actions = {
@@ -22,6 +25,7 @@ export const actions = {
     await dispatch('getToken')
     await dispatch('getCategories')
     await dispatch('getBrands')
+    await dispatch('getTags')
   },
 
   async getToken({ commit }) {
@@ -31,17 +35,14 @@ export const actions = {
         password: 'PRVny43BbkV3akYQNI',
       })
       .then((res) => commit('setToken', res.token ? res.token : null))
-      .catch((err) => console.log(err))
+      .catch((err) => console.error(err))
   },
 
   async refreshToken({ commit }) {
     await this.$axios
-      .$post('/wp-json/jwt-auth/v1/token/validate', {
-        username: 'budobalk',
-        password: 'PRVny43BbkV3akYQNI',
-      })
+      .$post('/wp-json/jwt-auth/v1/token/validate')
       .then((res) => commit('setToken', res.token ? res.token : null))
-      .catch((err) => console.log(err))
+      .catch((err) => console.error(err))
   },
 
   async getCategories({ commit }) {
@@ -55,8 +56,15 @@ export const actions = {
     await this.$axios
       .$get(`wp-json/wc/v3/products/attributes/${process.env.BRANDS_TAXONOMY_ID}/terms`)
       .then((res) => commit('setBrands', res))
-      .catch((err) => console.log(err))
+      .catch((err) => console.error(err))
   },
+
+  async getTags({ commit }) {
+    await this.$axios
+      .$get(`wp-json/wc/v3/products/tags?per_page=100`)
+      .then(res => commit('setTags', res))
+      .catch(err => console.error(err));
+  }
 }
 
 export const getters = {

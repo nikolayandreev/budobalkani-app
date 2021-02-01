@@ -1,6 +1,5 @@
 <template>
   <div>
-    <pre>{{ category }}</pre>
     <pre>{{ products }}</pre>
   </div>
 </template>
@@ -14,22 +13,12 @@ export default {
       products: null,
     }
   },
-  validate({ params, query, store }) {
-    return store.state.categories.find((elem) => elem.slug === params.slug)
-  },
-  async asyncData({ $axios, params }) {
-    const data = await $axios.$get(
-      `/wp-json/wc/v3/products/categories?slug=${params.slug}`
-    )
-
-    return {
-      category: data.shift(),
-    }
-  },
   methods: {
     async getProducts() {
       await this.$axios
-        .$get(`/wp-json/wc/v3/products?category=${this.category.id}`)
+        .$get(
+          `/wp-json/wc/v3/products?attribute=pa_suitable&attribute_term=${process.env.WOMEN_ATTRIBUTE_ID}&attribute_term=${process.env.UNISEX_ATTRIBUTE_ID}&stock_status=instock`
+        )
         .then((res) => {
           this.products = res
           this.pending = false
