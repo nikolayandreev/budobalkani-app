@@ -1,22 +1,28 @@
 <template>
   <div>
+    <Header />
     <Navigation />
     <Nuxt />
+    <Footer />
   </div>
 </template>
 
 <script>
+import Header from '~/components/Header/Header'
 import Navigation from '~/components/base/Navigation'
+import Footer from '~/components/Footer/Footer'
 
 export default {
   components: {
     Navigation,
+    Header,
+    Footer,
   },
   mounted() {},
 }
 </script>
 
-<style>
+<style lang="scss">
 html {
   font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
     Roboto, 'Helvetica Neue', Arial, sans-serif;

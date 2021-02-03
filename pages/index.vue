@@ -28,9 +28,7 @@
 
 <script>
 export default {
-  mounted() {
-    this.$axios.$get('/wp-json/wc/v3/products').then((res) => console.log(res))
-  },
+  mounted() {},
 }
 </script>
 

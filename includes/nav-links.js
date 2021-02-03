@@ -367,6 +367,7 @@ export const NavLinks = [
                 href: '/marki/zebra',
             },
             {
+                separate: true,
                 title: 'Други',
                 href: '/marki/drugi',
             },
@@ -375,9 +376,11 @@ export const NavLinks = [
     {
         title: 'Промоции',
         href: '/promocii',
+        promotion: true,
     },
     {
         title: 'Ново',
         href: '/novi-produkti',
+        latest: true,
     },
 ];
