@@ -78,14 +78,14 @@
               href="#"
               @click.prevent="login"
               title="Влез в акаунта си"
-              class="w-1/2 py-3 text-sm font-semibold text-center text-gray-300 hover:text-white bg-blue-accent rounded-bl-md"
+              class="w-1/2 py-3 text-sm font-semibold text-center text-gray-300 hover:text-white bg-blue-accent hover:bg-blue-hover rounded-bl-md"
             >
               Вход
             </a>
             <nuxt-link
               to="/registracia"
               title="Нов акаунта"
-              class="inline-block w-1/2 py-3 text-sm font-semibold text-center text-gray-600 bg-gray-200 hover:text-gray-700 rounded-br-md"
+              class="inline-block w-1/2 py-3 text-sm font-semibold text-center text-gray-600 bg-gray-200 hover:bg-gray-300 hover:text-gray-700 rounded-br-md"
               >Регистрация</nuxt-link
             >
           </div>

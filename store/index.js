@@ -3,6 +3,7 @@ export const state = () => ({
   categories: null,
   tags: null,
   brands: null,
+  cart: null,
 })
 
 export const mutations = {
@@ -17,7 +18,7 @@ export const mutations = {
   },
   setTags(state, payload) {
     state.tags = payload
-  }
+  },
 }
 
 export const actions = {
@@ -64,7 +65,7 @@ export const actions = {
       .$get(`wp-json/wc/v3/products/tags?per_page=100`)
       .then(res => commit('setTags', res))
       .catch(err => console.error(err));
-  }
+  },
 }
 
 export const getters = {
@@ -76,5 +77,5 @@ export const getters = {
   },
   getBrands(state) {
     return state.brands
-  }
+  },
 }

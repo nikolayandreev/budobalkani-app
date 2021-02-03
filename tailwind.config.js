@@ -15,6 +15,7 @@ module.exports = {
     extend: {
       colors: {
         'blue-accent': '#0749db',
+        'blue-hover': '#1c5ef0',
         'yellow-accent': '#fddb25',
         'red-accent': '#f32516',
         'regal-blue': '#243c5a',
@@ -24,7 +25,7 @@ module.exports = {
   variants: {
     textColor: ['responsive', 'hover', 'focus', 'group-hover'],
     borderRadius: ['first', 'last'],
-    display: ['hover', 'group-hover']
+    display: ['hover', 'group-hover'],
   },
   plugins: [],
 }

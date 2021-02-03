@@ -3,9 +3,9 @@
     v-click-outside="closeDropdown"
     @mouseenter="openDropdown"
     @mouseleave="closeDropdown"
-    class="relative flex flex-row items-center mr-10 cursor-pointer flex-nowrap group"
+    class="relative flex flex-row items-center mr-10 flex-nowrap group"
   >
-    <div class="relative inline-block">
+    <div class="relative inline-block cursor-pointer">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
@@ -26,7 +26,8 @@
         >{{ favorites.length }}</span
       >
     </div>
-    <span class="font-semibold text-gray-300 group-hover:text-white"
+    <span
+      class="font-semibold text-gray-300 cursor-pointer group-hover:text-white"
       >Любими</span
     >
     <transition name="slide">
@@ -43,17 +44,20 @@
                 <nuxt-link
                   :to="`/produkti/${link.slug}`"
                   :title="link.name"
-                  class="flex flex-row items-center w-full px-2 py-2 border-b border-gray-300 hover:bg-gray-200 fav-item"
+                  class="flex flex-row items-start w-full px-2 py-2 border-b border-gray-400 hover:bg-gray-200 fav-item"
                 >
-                  <div class="w-16 h-24 overflow-hidden">
+                  <div
+                    class="w-auto h-16 overflow-hidden bg-white"
+                    style="max-width: 4rem"
+                  >
                     <img
-                      class="object-cover"
+                      class="object-contain"
                       :src="link.images[0].src"
                       :alt="link.name"
                     />
                   </div>
-                  <div class="py-2 mx-2">
-                    <span class="block text-sm leading-4 text-gray-800">{{
+                  <div class="mx-2">
+                    <span class="block text-xs leading-4 text-gray-800">{{
                       link.name
                     }}</span>
                     <div
@@ -62,6 +66,7 @@
                       <button
                         @click.prevent="addToCart(link.id)"
                         class="flex flex-row flex-no-wrap items-center justify-center w-1/2 rounded-md hover:bg-gray-300 add-to-cart"
+                        title="Добави в количката"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -77,13 +82,14 @@
                             d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                           />
                         </svg>
-                        <span class="py-2 text-xs leading-4 text-blue-accent"
+                        <span class="py-1 text-xs leading-4 text-blue-accent"
                           >Купи</span
                         >
                       </button>
                       <button
                         @click.prevent="removeFromWishlist(link.id)"
                         class="flex flex-row flex-no-wrap items-center justify-center w-1/2 rounded-md hover:bg-gray-300 remove-from-wishlist"
+                        :title="`Премахни ${link.name}`"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -99,28 +105,38 @@
                             d="M6 18L18 6M6 6l12 12"
                           />
                         </svg>
-                        <span class="py-2 text-xs leading-4 text-red-accent"
+                        <span class="py-1 text-xs leading-4 text-red-accent"
                           >Премахни</span
                         >
                       </button>
                     </div>
                   </div>
-                  <div class="w-32 text-right">
+                  <div class="self-center w-32 text-right whitespace-no-wrap">
                     <div v-if="link.on_sale" class="leading-4">
-                      <span class="text-sm font-semibold text-blue-accent"
+                      <span
+                        class="block w-full text-xs font-semibold text-blue-accent"
                         >{{ link.sale_price }} лв.</span
                       >
                       <span
-                        class="text-xs font-semibold text-gray-600 line-through"
+                        class="block w-full text-xs font-semibold text-gray-600 line-through"
                         >{{ link.regular_price }} лв.</span
                       >
                     </div>
                     <span
                       v-if="!link.on_sale"
-                      class="text-sm font-semibold text-blue-accent"
+                      class="block w-full text-xs font-semibold text-blue-accent"
                       >{{ link.price }} лв.</span
                     >
                   </div>
+                </nuxt-link>
+              </li>
+              <li>
+                <nuxt-link
+                  to="/lubimi"
+                  title="Всички любими"
+                  class="block py-1 text-center text-gray-500 bg-blue-100 hover:bg-blue-200 hover:text-gray-600"
+                >
+                  Виж всички продукти
                 </nuxt-link>
               </li>
             </ul>
@@ -141,7 +157,7 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
             <p class="w-auto pl-2 text-gray-600">Няма любими продукти</p>
@@ -156,9 +172,8 @@
 export default {
   data() {
     return {
-      showDropdown: true,
+      showDropdown: false,
       dropdownTimer: null,
-      favorites: null,
     }
   },
   methods: {
@@ -178,54 +193,14 @@ export default {
       alert(id)
     },
     removeFromWishlist(id) {
-      alert(id)
+      this.$store.dispatch('wishlist/removeFromWishlist', id)
+      this.$store.dispatch('wishlist/updateWishlist')
     },
   },
   computed: {
-    wishlist() {
-      return JSON.parse(localStorage.getItem('budobalkani_wishlist'))
+    favorites() {
+      return this.$store.getters['wishlist/getWishlist']
     },
-  },
-
-  mounted() {
-    this.$axios
-      .$get('/wp-json/wc/v3/products')
-      .then((res) => {
-        this.favorites = res.map((elem) => {
-          return {
-            id: elem.id,
-            slug: elem.slug,
-            name: elem.name,
-            images: elem.images,
-            price: parseFloat(elem.price).toFixed(2),
-            regular_price: parseFloat(elem.regular_price).toFixed(2),
-            sale_price: parseFloat(elem.sale_price).toFixed(2),
-            on_sale: elem.on_sale,
-          }
-        })
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-    localStorage.setItem(
-      'budobalkani_wishlist',
-      JSON.stringify([
-        {
-          id: 1,
-          slug: 'test',
-          name: 'test',
-          image:
-            'http://budobalkani.bg/wp-content/uploads/2018/09/judoanzug-judogi-mizuno-yusho-best-2-ijf-2015-750-g-blau-01_384x543.jpg',
-        },
-        {
-          id: 2,
-          slug: 'test2',
-          name: 'test2',
-          image:
-            'http://budobalkani.bg/wp-content/uploads/2018/09/judoanzug-judogi-mizuno-yusho-best-2-ijf-2015-750-g-weiss-02_384x543.jpg',
-        },
-      ])
-    )
   },
 }
 </script>
@@ -234,7 +209,7 @@ export default {
 .dropdown {
   left: 50%;
   top: 130%;
-  min-width: 20em;
+  min-width: 25rem;
   transform: translateX(-50%);
   transform-origin: top;
   transition: all 0.2s;

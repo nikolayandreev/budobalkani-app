@@ -18,7 +18,17 @@ export default {
     Header,
     Footer,
   },
-  mounted() {},
+  methods: {
+    initWishlist() {
+      const wishlist = localStorage.getItem('budobalkani_wishlist')
+      this.$store.dispatch('wishlist/initWishlist', JSON.parse(wishlist))
+    },
+  },
+  mounted() {
+    if (process.client) {
+      this.initWishlist()
+    }
+  },
 }
 </script>
 
