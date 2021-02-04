@@ -23,12 +23,15 @@ export default {
         (elem) => elem.slug === this.$route.params.slug
       )
     },
+    requiredFilters() {
+      return `status=publish&stock_status=instock`
+    },
   },
   methods: {
     async getProducts() {
       await this.$axios
         .$get(
-          `/wp-json/wc/v3/products?attribute=pa_marka&attribute_term=${this.term.id}&stock_status=instock`
+          `/wp-json/wc/v3/products?attribute=pa_marka&attribute_term=${this.term.id}&${this.requiredFilters}`
         )
         .then((res) => {
           this.products = res

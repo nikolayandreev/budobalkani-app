@@ -19,12 +19,15 @@ export default {
       d.setMonth(d.getMonth() - 1)
       return d.toISOString()
     },
+    requiredFilters() {
+      return `status=publish&stock_status=instock`
+    },
   },
   methods: {
     async getProducts() {
       await this.$axios
         .$get(
-          `/wp-json/wc/v3/products?after=${this.dateLatest}&stock_status=instock`
+          `/wp-json/wc/v3/products?after=${this.dateLatest}&${this.requiredFilters}`
         )
         .then((res) => {
           this.products = res

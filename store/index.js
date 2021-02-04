@@ -1,5 +1,6 @@
 export const state = () => ({
   token: null,
+  token_expires: null,
   categories: null,
   tags: null,
   brands: null,
@@ -8,7 +9,8 @@ export const state = () => ({
 
 export const mutations = {
   setToken(state, payload) {
-    state.token = payload
+    state.token = payload.token
+    state.token_expires = payload.token_expires
   },
   setCategories(state, payload) {
     state.categories = payload
@@ -31,12 +33,15 @@ export const actions = {
 
   async getToken({ commit }) {
     await this.$axios
-      .$post('/wp-json/jwt-auth/v1/token', {
-        username: 'budobalk',
-        password: 'PRVny43BbkV3akYQNI',
+      .$post('/wp-json/aam/v2/authenticate', {
+        username: 'api',
+        password: 'Ew%IwmpCT@LxVRw$3vN%H8XU',
+        issueJWT: true,
       })
-      .then((res) => commit('setToken', res.token ? res.token : null))
-      .catch((err) => console.error(err))
+      .then(res => commit('setToken', res.jwt))
+    .catch(err => console.log(err));
+      // .then((res) => commit('setToken', res.data.token ? res.data.token : null))
+      // .catch((err) => console.error(err))
   },
 
   async refreshToken({ commit }) {

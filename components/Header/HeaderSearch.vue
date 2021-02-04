@@ -136,6 +136,11 @@ export default {
       }
     },
   },
+  computed: {
+    requiredFilters() {
+      return `status=publish`
+    },
+  },
   methods: {
     highlight(string) {
       const substring = new RegExp(this.search, 'gi')
@@ -170,9 +175,9 @@ export default {
 
       this.$axios
         .$get(
-          `/wp-json/wc/v3/products?per_page=10&stock_status=instock&search=${this.sanitizeInput(
-            this.search
-          )}`
+          `/wp-json/wc/v3/products?per_page=10&${
+            this.requiredFilters
+          }&search=${this.sanitizeInput(this.search)}`
         )
         .then((res) => {
           if (res && res.length) {

@@ -56,13 +56,13 @@
                       :alt="link.name"
                     />
                   </div>
-                  <div class="mx-2">
+                  <div class="w-64 mx-2">
                     <span class="block text-xs leading-4 text-gray-800">{{
                       link.name
                     }}</span>
                     <button
-                      @click.prevent="removeFromWishlist(link.id)"
-                      class="flex flex-row flex-no-wrap items-center justify-center remove-from-wishlist"
+                      @click.prevent="removeFromCart(link.id)"
+                      class="flex flex-row flex-no-wrap items-center justify-center remove-from-cart"
                       :title="`Премахни ${link.name}`"
                     >
                       <span
@@ -80,20 +80,35 @@
                     <div v-if="link.on_sale" class="leading-4">
                       <span
                         class="block w-full text-xs font-semibold text-blue-accent"
-                        >{{ link.sale_price }} лв.</span
+                        >{{ parseFloat(link.sale_price).toFixed(2) }} лв.</span
                       >
                       <span
                         class="block w-full text-xs font-semibold text-gray-600 line-through"
-                        >{{ link.regular_price }} лв.</span
+                        >{{
+                          parseFloat(link.regular_price).toFixed(2)
+                        }}
+                        лв.</span
                       >
                     </div>
                     <span
                       v-if="!link.on_sale"
                       class="block w-full text-xs font-semibold text-blue-accent"
-                      >{{ link.price }} лв.</span
+                      >{{ parseFloat(link.price).toFixed(2) }} лв.</span
                     >
                   </div>
                 </nuxt-link>
+              </li>
+              <li>
+                <div
+                  class="flex flex-row flex-no-wrap items-center justify-between px-3 py-2 bg-gray-200"
+                >
+                  <span class="text-sm font-semibold text-gray-600"
+                    >Общо {{ quantity }} продукта</span
+                  >
+                  <span class="text-sm font-semibold text-blue-accent">
+                    {{ parseFloat(total).toFixed(2) }} лв.
+                  </span>
+                </div>
               </li>
               <li>
                 <nuxt-link
@@ -152,6 +167,8 @@
 export default {
   data() {
     return {
+      total: 0,
+      quantity: 0,
       showDropdown: true,
       dropdownTimer: null,
       cart: null,
@@ -170,21 +187,36 @@ export default {
         this.showDropdown = false
       }, 100)
     },
-    addToCart(id) {
-      alert(id)
+    removeFromCart(id) {
+      const index = this.cart.findIndex((elem) => elem.id === id)
+      return this.cart.splice(index, 1)
     },
-    removeFromWishlist(id) {
-      alert(id)
+  },
+  watch: {
+    cart(val) {
+      if (val && val.length) {
+        this.quantity = this.cart
+          .map((elem) => elem.quantity)
+          .reduce((accumulator, elem) => {
+            return parseInt(accumulator) + parseInt(elem)
+          })
+
+        this.total = this.cart
+          .map((elem) => (elem.on_sale ? elem.sale_price : elem.price))
+          .reduce((accumulator, elem) => {
+            return parseFloat(accumulator) + parseFloat(elem)
+          })
+      }
     },
   },
   computed: {
-    wishlist() {
-      return JSON.parse(localStorage.getItem('budobalkani_wishlist'))
+    requiredFilters() {
+      return `status=publish&stock_status=instock`
     },
   },
   mounted() {
     this.$axios
-      .$get('/wp-json/wc/v3/products')
+      .$get(`/wp-json/wc/v3/products?${this.requiredFilters}`)
       .then((res) => {
         this.cart = res.map((elem) => {
           return {
@@ -193,9 +225,9 @@ export default {
             slug: elem.slug,
             name: elem.name,
             images: elem.images,
-            price: parseFloat(elem.price).toFixed(2),
-            regular_price: parseFloat(elem.regular_price).toFixed(2),
-            sale_price: parseFloat(elem.sale_price).toFixed(2),
+            price: elem.price,
+            regular_price: elem.regular_price,
+            sale_price: elem.sale_price,
             on_sale: elem.on_sale,
           }
         })

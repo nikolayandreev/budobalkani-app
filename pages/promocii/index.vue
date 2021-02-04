@@ -13,10 +13,15 @@ export default {
       products: null,
     }
   },
+  computed: {
+    requiredFilters() {
+      return `status=publish`
+    },
+  },
   methods: {
     async getProducts() {
       await this.$axios
-        .$get(`/wp-json/wc/v3/products?on_sale=true&stock_status=instock`)
+        .$get(`/wp-json/wc/v3/products?on_sale=1&${this.requiredFilters}`)
         .then((res) => {
           this.products = res
           this.pending = false
