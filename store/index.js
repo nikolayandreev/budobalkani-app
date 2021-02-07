@@ -1,6 +1,9 @@
 export const state = () => ({
   token: null,
   token_expires: null,
+  customer_token: null,
+  customer_token_expires: null,
+  loggedIn: false,
   categories: null,
   tags: null,
   brands: null,
@@ -11,6 +14,16 @@ export const mutations = {
   setToken(state, payload) {
     state.token = payload.token
     state.token_expires = payload.token_expires
+  },
+  deleteCustomerToken(state, payload) {
+    state.customer_token = null;
+    state.customer_token_expires = null;
+    state.loggedIn = false;
+  },
+  setCustomerToken(state, payload) {
+    state.customer_token = payload.token
+    state.customer_token_expires = payload.token_expires
+    state.loggedIn = true
   },
   setCategories(state, payload) {
     state.categories = payload
@@ -31,6 +44,14 @@ export const actions = {
     await dispatch('getTags')
   },
 
+  setCustomerToken({ commit }, payload) {
+    commit('setCustomerToken', payload)
+  },
+
+  logoutCustomer({ commit }) {
+    commit('deleteCustomerToken');
+  },
+
   async getToken({ commit }) {
     await this.$axios
       .$post('/wp-json/aam/v2/authenticate', {
@@ -39,16 +60,7 @@ export const actions = {
         issueJWT: true,
       })
       .then(res => commit('setToken', res.jwt))
-    .catch(err => console.log(err));
-      // .then((res) => commit('setToken', res.data.token ? res.data.token : null))
-      // .catch((err) => console.error(err))
-  },
-
-  async refreshToken({ commit }) {
-    await this.$axios
-      .$post('/wp-json/jwt-auth/v1/token/validate')
-      .then((res) => commit('setToken', res.token ? res.token : null))
-      .catch((err) => console.error(err))
+      .catch(err => console.log(err));
   },
 
   async getCategories({ commit }) {

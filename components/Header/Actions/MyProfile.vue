@@ -74,18 +74,17 @@
             <p class="w-auto pl-2 text-gray-600">Влезете в акаунта си.</p>
           </div>
           <div class="flex flex-row flex-nowrap">
-            <a
-              href="#"
-              @click.prevent="login"
+            <nuxt-link
+              to="/vhod"
               title="Влез в акаунта си"
-              class="w-1/2 py-3 text-sm font-semibold text-center text-gray-300 hover:text-white bg-blue-accent hover:bg-blue-hover rounded-bl-md"
+              class="w-1/2 py-3 text-sm font-semibold text-center text-gray-300 transition-all duration-200 hover:text-white bg-blue-accent hover:bg-blue-hover rounded-bl-md"
             >
               Вход
-            </a>
+            </nuxt-link>
             <nuxt-link
               to="/registracia"
               title="Нов акаунта"
-              class="inline-block w-1/2 py-3 text-sm font-semibold text-center text-gray-600 bg-gray-200 hover:bg-gray-300 hover:text-gray-700 rounded-br-md"
+              class="inline-block w-1/2 py-3 text-sm font-semibold text-center text-gray-600 transition-all duration-200 bg-gray-200 hover:bg-gray-300 hover:text-gray-700 rounded-br-md"
               >Регистрация</nuxt-link
             >
           </div>
@@ -96,10 +95,11 @@
 </template>
 
 <script>
+import Cookie from 'js-cookie'
+
 export default {
   data() {
     return {
-      loggedIn: true,
       showDropdown: false,
       dropdownTimer: null,
       links: [
@@ -122,6 +122,22 @@ export default {
       ],
     }
   },
+  computed: {
+    loggedIn() {
+      return this.$store.state.loggedIn
+    },
+  },
+  mounted() {
+    if (process.client && Cookie.get('budobalkani_jwt')) {
+      this.$axios
+        .$post('/wp-json/aam/v2/jwt/validate', {
+          jwt: Cookie.get('budobalkani_jwt'),
+        })
+        .catch((err) => {
+          this.logout()
+        })
+    }
+  },
   methods: {
     openDropdown() {
       clearTimeout(this.dropdownTimer)
@@ -136,10 +152,20 @@ export default {
       }, 100)
     },
     logout() {
-      this.loggedIn = false
-    },
-    login() {
-      this.loggedIn = true
+      return this.$axios
+        .$post('/wp-json/aam/v2/jwt/revoke', {
+          jwt: Cookie.get('budobalkani_jwt'),
+        })
+        .then((res) => {
+          Cookie.remove('budobalkani_jwt')
+          Cookie.remove('budobalkani_jwt_expires')
+          this.$store.dispatch('logoutCustomer')
+        })
+        .catch((err) => {
+          Cookie.remove('budobalkani_jwt')
+          Cookie.remove('budobalkani_jwt_expires')
+          this.$store.dispatch('logoutCustomer')
+        })
     },
   },
 }

@@ -21,11 +21,20 @@ module.exports = {
         'regal-blue': '#243c5a',
       },
     },
+    screens: {
+      xs: '480px',
+      sm: '640px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
   },
   variants: {
-    textColor: ['responsive', 'hover', 'focus', 'group-hover'],
+    textColor: ['responsive', 'hover', 'focus', 'group-hover', 'group-focus'],
     borderRadius: ['first', 'last'],
-    display: ['hover', 'group-hover'],
+    opacity: ['group-hover', 'group-focus'],
+    display: ['hover', 'group-hover', 'group-focus', 'responsive'],
   },
   plugins: [],
 }

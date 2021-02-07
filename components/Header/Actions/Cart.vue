@@ -114,7 +114,7 @@
                 <nuxt-link
                   to="/cart"
                   title="Към количката"
-                  class="flex flex-row flex-wrap items-center justify-center w-full py-3 text-gray-300 hover:text-white bg-blue-accent hover:bg-blue-hover"
+                  class="flex flex-row flex-wrap items-center justify-center w-full py-3 text-gray-300 transition-all duration-200 hover:text-white bg-blue-accent hover:bg-blue-hover"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -169,7 +169,7 @@ export default {
     return {
       total: 0,
       quantity: 0,
-      showDropdown: true,
+      showDropdown: false,
       dropdownTimer: null,
       cart: null,
     }

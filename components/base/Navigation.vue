@@ -1,5 +1,5 @@
 <template>
-  <nav class="bg-white border-b border-color-grey-100 font-body">
+  <nav class="bg-white border-b border-color-grey-100">
     <div class="container">
       <ul class="relative flex flex-row flex-wrap justify-center">
         <template v-for="(link, index) in links">
