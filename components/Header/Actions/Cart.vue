@@ -47,7 +47,7 @@
                   class="flex flex-row items-start w-full px-2 py-2 border-b border-gray-400 hover:bg-gray-200 fav-item"
                 >
                   <div
-                    class="w-auto h-16 overflow-hidden bg-white"
+                    class="w-16 h-16 overflow-hidden bg-white"
                     style="max-width: 4rem"
                   >
                     <img
