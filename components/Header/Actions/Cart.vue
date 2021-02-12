@@ -216,7 +216,7 @@ export default {
   },
   mounted() {
     this.$axios
-      .$get(`/wp-json/wc/v3/products?${this.requiredFilters}`)
+      .$get(`/api/products`)
       .then((res) => {
         this.cart = res.map((elem) => {
           return {
