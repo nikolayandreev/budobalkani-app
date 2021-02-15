@@ -90,6 +90,13 @@ import { required, sameAs, minLength } from 'vuelidate/lib/validators'
 
 export default {
   layout: 'auth',
+  validate({ store, redirect }) {
+    if (store.state.auth.loggedIn) {
+      redirect('/my-profile')
+    }
+
+    return true
+  },
   data() {
     return {
       pending: false,
@@ -165,7 +172,6 @@ export default {
   },
 }
 </script>
-
 
 <style lang="scss" scoped>
 .form-group {

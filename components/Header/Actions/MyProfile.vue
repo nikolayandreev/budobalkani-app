@@ -124,19 +124,8 @@ export default {
   },
   computed: {
     loggedIn() {
-      return this.$store.state.loggedIn
+      return this.$auth.loggedIn
     },
-  },
-  mounted() {
-    if (process.client && Cookie.get('budobalkani_jwt')) {
-      this.$axios
-        .$post('/wp-json/aam/v2/jwt/validate', {
-          jwt: Cookie.get('budobalkani_jwt'),
-        })
-        .catch((err) => {
-          this.logout()
-        })
-    }
   },
   methods: {
     openDropdown() {
@@ -152,20 +141,7 @@ export default {
       }, 100)
     },
     logout() {
-      return this.$axios
-        .$post('/wp-json/aam/v2/jwt/revoke', {
-          jwt: Cookie.get('budobalkani_jwt'),
-        })
-        .then((res) => {
-          Cookie.remove('budobalkani_jwt')
-          Cookie.remove('budobalkani_jwt_expires')
-          this.$store.dispatch('logoutCustomer')
-        })
-        .catch((err) => {
-          Cookie.remove('budobalkani_jwt')
-          Cookie.remove('budobalkani_jwt_expires')
-          this.$store.dispatch('logoutCustomer')
-        })
+      return this.$auth.logout()
     },
   },
 }

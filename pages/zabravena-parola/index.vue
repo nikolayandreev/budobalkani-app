@@ -92,6 +92,13 @@ import { required, email, sameAs, minLength } from 'vuelidate/lib/validators'
 
 export default {
   layout: 'auth',
+  validate({ store, redirect }) {
+    if (store.state.auth.loggedIn) {
+      redirect('/my-profile')
+    }
+
+    return true
+  },
   data() {
     return {
       sentMail: false,
@@ -133,7 +140,7 @@ export default {
       this.invalid_credentials = false
       await this.$axios
         .$post(
-          '/wp-json/bdpwr/v1/reset-password',
+          '/api/customer/forgot-password',
           {
             email: this.forgotPassword.email,
           },

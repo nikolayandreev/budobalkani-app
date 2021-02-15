@@ -13,16 +13,11 @@ export default {
       products: null,
     }
   },
-  computed: {
-    requiredFilters() {
-      return `status=publish&stock_status=instock`
-    },
-  },
   methods: {
     async getProducts() {
       await this.$axios
         .$get(
-          `/wp-json/wc/v3/products?attribute=pa_suitable&attribute_term=${process.env.MEN_ATTRIBUTE_ID}&attribute_term=${process.env.UNISEX_ATTRIBUTE_ID}&${this.requiredFilters}`
+          `/api/products?suitable=${process.env.MEN_ATTRIBUTE_ID},${process.env.UNISEX_ATTRIBUTE_ID}`
         )
         .then((res) => {
           this.products = res

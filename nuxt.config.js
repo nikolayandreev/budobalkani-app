@@ -21,8 +21,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~/plugins/axios',
     '~/plugins/vuelidate',
+    '~/plugins/axios',
     { src: '~/plugins/v-click-outside', mode: 'client' },
   ],
 
@@ -56,17 +56,29 @@ export default {
           autoFetch: false,
         },
         endpoints: {
-          login: { url: '/wp-json/jwt-auth/v1/token', method: 'post' },
-          logout: false,
+          login: {
+            url: '/api/customer/login?token=true',
+            method: 'POST',
+          },
+          logout: {
+            url: '/api/customer/logout',
+            method: 'GET',
+          },
           user: false,
         },
       },
+    },
+    redirect: {
+      login: '/vhod',
+      logout: '/',
+      callback: '/vhod',
+      home: '/',
     },
   },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // baseURL: process.env.BASE_URL,
+    credentials: true,
     proxy: true,
   },
 

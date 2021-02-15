@@ -68,7 +68,7 @@
           type="submit"
           class="flex flex-row flex-wrap items-center justify-center w-full py-3 mt-2 text-lg font-semibold text-gray-300 transition-all duration-200 outline-none focus:outline-none rounded-bl-md rounded-br-md hover:text-white bg-blue-accent hover:bg-blue-hover"
         >
-          Създай нов акаунт
+          Влез в акаунта си
         </button>
       </div>
     </div>
@@ -80,6 +80,13 @@ import { required, email } from 'vuelidate/lib/validators'
 
 export default {
   layout: 'auth',
+  validate({ store, redirect }) {
+    if (store.state.auth.loggedIn) {
+      redirect('/my-profile')
+    }
+
+    return true
+  },
   data() {
     return {
       pending: false,
@@ -124,36 +131,26 @@ export default {
     async loginCustomer() {
       this.pending = true
       this.invalid_credentials = false
-      await this.$axios
-        .$post('/wp-json/aam/v2/authenticate', {
-          username: this.loginForm.email,
-          password: this.loginForm.password,
-          issueJWT: true,
+      await this.$auth
+        .loginWith('local', {
+          data: this.loginForm,
         })
         .then((res) => {
-          localStorage.setItem('budobalkani_jwt', res.jwt.token)
-          localStorage.setItem('budobalkani_jwt_expires', res.jwt.token_expires)
-
-          this.$store.dispatch('setCustomerToken', res.jwt)
-          this.pending = false
-          return this.$router.push('/')
+          this.$auth.setUser(res.data.data)
         })
         .catch((err) => {
           this.pending = false
           const data = err.response ? err.response.data : null
+          this.loginForm.password = null
+          this.$v.loginForm.password.$touch()
 
-          if (!data) {
+          if (!data.error) {
             this.server_error = true
-            return false
+          } else {
+            this.invalid_credentials = true
           }
 
-          if (
-            data.code === 'invalid_username' ||
-            data.code === 'application_passwords_disabled'
-          ) {
-            this.invalid_credentials = true
-            return false
-          }
+          return false
         })
     },
     status(validation) {
@@ -192,7 +189,7 @@ export default {
   @apply absolute text-sm left-0 text-red-500;
   transform-origin: top;
   transition: all 0.2s;
-  bottom: 10px;
+  bottom: 5px;
 }
 .has-error {
   @apply pt-px absolute right-0 text-sm text-red-500;

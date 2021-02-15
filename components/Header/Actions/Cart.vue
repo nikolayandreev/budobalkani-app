@@ -42,7 +42,7 @@
             <ul>
               <li v-for="link in cart" :key="link.id">
                 <nuxt-link
-                  :to="`/produkti/${link.slug}`"
+                  :to="`/produkti/${link.url_key}`"
                   :title="link.name"
                   class="flex flex-row items-start w-full px-2 py-2 border-b border-gray-400 hover:bg-gray-200 fav-item"
                 >
@@ -52,7 +52,7 @@
                   >
                     <img
                       class="object-contain"
-                      :src="link.images[0].src"
+                      :src="link.images[0].url"
                       :alt="link.name"
                     />
                   </div>
@@ -215,26 +215,26 @@ export default {
     },
   },
   mounted() {
-    this.$axios
-      .$get(`/api/products`)
-      .then((res) => {
-        this.cart = res.map((elem) => {
-          return {
-            quantity: 1,
-            id: elem.id,
-            slug: elem.slug,
-            name: elem.name,
-            images: elem.images,
-            price: elem.price,
-            regular_price: elem.regular_price,
-            sale_price: elem.sale_price,
-            on_sale: elem.on_sale,
-          }
-        })
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+    // this.$axios
+    //   .$get(`/api/products`)
+    //   .then((res) => {
+    //     this.cart = res.map((elem) => {
+    //       return {
+    //         quantity: 1,
+    //         id: elem.id,
+    //         slug: elem.slug,
+    //         name: elem.name,
+    //         images: elem.images,
+    //         price: elem.price,
+    //         regular_price: elem.regular_price,
+    //         sale_price: elem.sale_price,
+    //         on_sale: elem.on_sale,
+    //       }
+    //     })
+    //   })
+    //   .catch((err) => {
+    //     console.error(err)
+    //   })
   },
 }
 </script>

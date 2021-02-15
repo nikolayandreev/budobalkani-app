@@ -138,13 +138,13 @@
             </div>
             <div
               class="mb-3 form-group xs:mb-5"
-              :class="status($v.registerForm.password_confirmed)"
+              :class="status($v.registerForm.password_confirmation)"
             >
-              <label for="real-password-confirmed">Потвърди паролата</label>
+              <label for="real-password-confirmation">Потвърди паролата</label>
               <input
-                id="real-password-confirmed"
+                id="real-password-confirmation"
                 type="password"
-                v-model="$v.registerForm.password_confirmed.$model"
+                v-model="$v.registerForm.password_confirmation.$model"
                 placeholder="Потъврди паролата..."
                 autocomplete="new-password"
               />
@@ -152,8 +152,8 @@
                 <div
                   class="has-error"
                   v-if="
-                    !$v.registerForm.password_confirmed.sameAsPassword &&
-                    $v.registerForm.password_confirmed.$dirty
+                    !$v.registerForm.password_confirmation.sameAsPassword &&
+                    $v.registerForm.password_confirmation.$dirty
                   "
                 >
                   Паролите не съвпадат
@@ -180,6 +180,13 @@ import { required, email, sameAs, minLength } from 'vuelidate/lib/validators'
 
 export default {
   layout: 'auth',
+  validate({ store, redirect }) {
+    if (store.state.auth.loggedIn) {
+      redirect('/my-profile')
+    }
+
+    return true
+  },
   data() {
     return {
       pending: false,
@@ -191,7 +198,7 @@ export default {
         first_name: '',
         last_name: '',
         password: '',
-        password_confirmed: '',
+        password_confirmation: '',
       },
     }
   },
@@ -213,7 +220,7 @@ export default {
         required,
         minLength: minLength(8),
       },
-      password_confirmed: {
+      password_confirmation: {
         required,
         sameAsPassword: sameAs('password'),
       },
@@ -236,13 +243,7 @@ export default {
     async createCustomer() {
       this.pending = true
       await this.$axios
-        .$post('/wp-json/wc/v3/customers', {
-          email: this.registerForm.email,
-          username: this.registerForm.email,
-          password: this.registerForm.password,
-          first_name: this.registerForm.first_name,
-          last_name: this.registerForm.last_name,
-        })
+        .$post('/api/customer/register', this.registerForm)
         .then((res) => {
           this.pending = false
           return this.$router.push('/vhod')
