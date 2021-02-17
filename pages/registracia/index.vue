@@ -182,7 +182,7 @@ export default {
   layout: 'auth',
   validate({ store, redirect }) {
     if (store.state.auth.loggedIn) {
-      redirect('/my-profile')
+      redirect('/profile')
     }
 
     return true
@@ -243,7 +243,11 @@ export default {
     async createCustomer() {
       this.pending = true
       await this.$axios
-        .$post('/api/customer/register', this.registerForm)
+        .$post('/api/customer/register', {
+          ...this.registerForm,
+          date_of_birth: null,
+          gender: null,
+        })
         .then((res) => {
           this.pending = false
           return this.$router.push('/vhod')
@@ -252,7 +256,7 @@ export default {
           this.pending = false
           const data = err.response.data
 
-          if (data && data.code === 'registration-error-email-exists') {
+          if (data.errors && data.errors.email) {
             this.email_in_use = true
             return false
           }

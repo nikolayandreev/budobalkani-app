@@ -92,7 +92,7 @@ export default {
   layout: 'auth',
   validate({ store, redirect }) {
     if (store.state.auth.loggedIn) {
-      redirect('/my-profile')
+      redirect('/profile')
     }
 
     return true

@@ -27,7 +27,7 @@ export default {
   beforeCreate() {
     if (this.$auth.loggedIn && (!this.$auth.user || !this.$auth.user.length)) {
       return this.$axios
-        .$get('/api/customer/get')
+        .$get('/api/customer/get?token=true')
         .then((res) => {
           this.$auth.setUser(res.data)
         })

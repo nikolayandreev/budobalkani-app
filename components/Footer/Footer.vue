@@ -66,7 +66,7 @@ export default {
           children: [
             {
               title: 'Моят профил',
-              href: '/my-profile',
+              href: '/profile',
             },
             {
               title: 'Как да поръчам онлайн',

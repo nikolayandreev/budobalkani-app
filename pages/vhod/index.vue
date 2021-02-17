@@ -45,6 +45,7 @@
               type="password"
               v-model="$v.loginForm.password.$model"
               placeholder="Email адрес..."
+              @focus="invalid_credentials = false"
             />
             <nuxt-link
               class="inline-block w-full mt-1 text-sm text-right text-gray-600"
@@ -55,10 +56,16 @@
           </div>
           <transition name="skew">
             <div
-              class="w-full text-center server-error"
-              v-if="invalid_credentials"
+              class="w-full text-center system-error"
+              v-if="!pending && invalid_credentials"
             >
               Email адреса или паролата са грешни!
+            </div>
+            <div
+              class="w-full text-center system-error"
+              v-if="!pending && server_error"
+            >
+              Сървъра не отговаря, моля опитайте по-късно!
             </div>
           </transition>
         </div>
@@ -82,7 +89,7 @@ export default {
   layout: 'auth',
   validate({ store, redirect }) {
     if (store.state.auth.loggedIn) {
-      redirect('/my-profile')
+      redirect('/profile')
     }
 
     return true
@@ -115,9 +122,6 @@ export default {
     'loginForm.email': function (val) {
       this.invalid_credentials = false
     },
-    'loginForm.password': function (val) {
-      this.invalid_credentials = false
-    },
   },
   methods: {
     onSubmit() {
@@ -130,7 +134,7 @@ export default {
     },
     async loginCustomer() {
       this.pending = true
-      this.invalid_credentials = false
+
       await this.$auth
         .loginWith('local', {
           data: this.loginForm,
@@ -139,15 +143,16 @@ export default {
           this.$auth.setUser(res.data.data)
         })
         .catch((err) => {
-          this.pending = false
           const data = err.response ? err.response.data : null
+
+          this.pending = false
           this.loginForm.password = null
           this.$v.loginForm.password.$touch()
 
-          if (!data.error) {
-            this.server_error = true
-          } else {
+          if (data.error === 'Invalid Email or Password') {
             this.invalid_credentials = true
+          } else {
+            this.server_error = true
           }
 
           return false
@@ -185,7 +190,7 @@ export default {
     @apply mb-0;
   }
 }
-.server-error {
+.system-error {
   @apply absolute text-sm left-0 text-red-500;
   transform-origin: top;
   transition: all 0.2s;

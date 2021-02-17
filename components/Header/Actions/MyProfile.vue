@@ -105,19 +105,19 @@ export default {
       links: [
         {
           title: 'Моят акаунт',
-          href: '/my-profile',
+          href: '/profile',
         },
         {
           title: 'Моите поръчки',
-          href: '/my-profile/orders',
+          href: '/profile/porachki',
         },
         {
           title: 'Моите ревюта',
-          href: '/my-profile/reviews',
+          href: '/profile/otzivi',
         },
         {
           title: 'Моите адреси',
-          href: '/my-profile/addresses',
+          href: '/profile/adresi',
         },
       ],
     }
