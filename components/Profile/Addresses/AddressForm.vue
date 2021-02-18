@@ -197,7 +197,7 @@ import {
   requiredIf,
   minLength,
 } from 'vuelidate/lib/validators'
-import { validPhone } from '~/plugins/custom-validators'
+import { validPhone, validVatId } from '~/plugins/custom-validators'
 
 export default {
   props: {
@@ -231,7 +231,7 @@ export default {
     addressForm: {
       phone: {
         required,
-        validPhone: validPhone,
+        validPhone,
       },
       first_name: {
         required,
@@ -262,6 +262,7 @@ export default {
         required: requiredIf(function () {
           return this.has_company
         }),
+        validVatId,
       },
     },
   },

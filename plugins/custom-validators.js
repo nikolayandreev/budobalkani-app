@@ -8,13 +8,8 @@ export const validName = (value = '') => {
   return false
 }
 export const validVatId = (value = '') => {
-  if (!value) {
-    return false
-  }
-  if (!value.startsWith('BG')) {
-    return false
-  }
-} //BG999999999
+  return value && value.length === 11 && value.startsWith('BG')
+}
 export const validPhone = (value = '') => {
   const $prefixes3 = ['099', '098', '087', '088', '089']
   const $prefixes4 = ['0437', '0438', '0439']
