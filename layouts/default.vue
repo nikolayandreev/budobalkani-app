@@ -1,62 +1,93 @@
 <template>
   <div>
-    <Nuxt />
+    <Header />
+    <Navigation />
+    <transition
+      name="fade"
+      mode="out-in"
+      @beforeLeave="beforeLeave"
+      @enter="enter"
+      @afterEnter="afterEnter"
+    >
+      <Nuxt />
+    </transition>
+    <Footer />
   </div>
 </template>
 
+<script>
+import Header from '~/components/Header/Header'
+import Navigation from '~/components/base/Navigation'
+import Footer from '~/components/Footer/Footer'
+
+export default {
+  components: {
+    Navigation,
+    Header,
+    Footer,
+  },
+  methods: {
+    initWishlist() {
+      const wishlist = localStorage.getItem('budobalkani_wishlist')
+      this.$store.dispatch('wishlist/initWishlist', JSON.parse(wishlist))
+    },
+    logout() {
+      return this.$auth.logout()
+    },
+    getUser() {
+      if (!this.$auth.loggedIn) {
+        return this.logout()
+      }
+
+      if (!this.$auth.user || !Object.keys(this.$auth.user).length) {
+        return this.$axios
+          .$get('/api/customer/get?token=true')
+          .then((res) => {
+            this.$auth.setUser(res.data)
+          })
+          .catch((err) => this.logout())
+      }
+
+      return this.$auth.user
+    },
+    beforeLeave(element) {
+      this.prevHeight = getComputedStyle(element).height
+    },
+    enter(element) {
+      const { height } = getComputedStyle(element)
+
+      element.style.height = this.prevHeight
+
+      setTimeout(() => {
+        element.style.height = height
+      })
+    },
+    afterEnter(element) {
+      element.style.height = 'auto'
+    },
+  },
+  created() {
+    this.getUser()
+  },
+  mounted() {
+    if (process.client) {
+      this.initWishlist()
+    }
+  },
+}
+</script>
+
 <style>
-html {
-  font-family:
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
+.fade-enter-active,
+.fade-leave-active {
+  transition-duration: 0.3s;
+  transition-property: height, opacity;
+  transition-timing-function: ease;
+  overflow: hidden;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-}
-
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 </style>
