@@ -1,61 +1,50 @@
 <template>
-  <section class="bg-gray-200">
-    <div class="container py-5">
-      <div class="flex flex-row flex-wrap">
-        <Navigation class="w-auto" style="min-width: 250px" />
-        <div
-          class="w-5/6 py-5 px-8 bg-gray-200 rounded-md justify-between flex flex-row flex-wrap"
-        >
-          test
-          {{ addresses }}
-        </div>
+  <div class="w-5/6">
+    <div class="w-full shadow-md rounded-md overflow-hidden bg-white">
+      <div class="wrapper py-10 px-16 mx-auto">
+        <AddressesList
+          :otherAddresses.sync="otherAddresses"
+          :defaultAddress.sync="defaultAddress"
+          :addressesCount="addressesCount"
+          :pending="pendingAddresses"
+        />
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
 import Navigation from '~/components/Profile/ProfileNavigation'
+import AddressesList from '~/components/Profile/Addresses/List'
 
 export default {
-  middleware: 'auth',
-  beforeCreate() {
-    if (!this.$store.getters['profile/getAddresses']) {
-      return this.$axios
-        .$get(`/api/addresses?token=true`)
-        .then((res) => {
-          this.$store.dispatch('profile/changeAddresses', res.data)
-          this.pendingAddresses = false
-        })
-        .catch((err) => console.error(err))
-    }
-  },
-  data() {
-    return {
-      pendingAddresses: !this.$store.getters['profile/getAddresses'],
-    }
-  },
+  layout: 'profile',
   components: {
     Navigation,
+    AddressesList,
   },
   computed: {
-    user() {
-      return this.$auth.user
-    },
     addresses() {
       return this.$store.getters['profile/getAddresses']
+    },
+    pendingAddresses() {
+      return !this.addresses
+    },
+    addressesCount() {
+      return this.addresses && this.addresses.length ? this.addresses.length : 0
     },
     defaultAddress() {
       return this.addresses
         ? this.addresses.find((elem) => elem.is_default)
         : null
     },
+    otherAddresses() {
+      if (!this.addresses) {
+        return null
+      }
+
+      return this.addresses.filter((elem) => !elem.is_default)
+    },
   },
 }
 </script>
-
-<style scoped>
-.loading {
-  @apply text-gray-300;
-}
-</style>

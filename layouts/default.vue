@@ -23,18 +23,28 @@ export default {
       const wishlist = localStorage.getItem('budobalkani_wishlist')
       this.$store.dispatch('wishlist/initWishlist', JSON.parse(wishlist))
     },
+    logout() {
+      return this.$auth.logout()
+    },
+    getUser() {
+      if (!this.$auth.loggedIn) {
+        return this.logout()
+      }
+
+      if (!this.$auth.user || !Object.keys(this.$auth.user).length) {
+        return this.$axios
+          .$get('/api/customer/get?token=true')
+          .then((res) => {
+            this.$auth.setUser(res.data)
+          })
+          .catch((err) => this.logout())
+      }
+
+      return this.$auth.user
+    },
   },
-  beforeCreate() {
-    if (this.$auth.loggedIn && (!this.$auth.user || !this.$auth.user.length)) {
-      return this.$axios
-        .$get('/api/customer/get?token=true')
-        .then((res) => {
-          this.$auth.setUser(res.data)
-        })
-        .catch((err) => {
-          this.$auth.logout()
-        })
-    }
+  created() {
+    this.getUser()
   },
   mounted() {
     if (process.client) {
