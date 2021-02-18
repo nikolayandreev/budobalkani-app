@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <div class="grid gap-5 grid-cols-2">
+    <div class="grid grid-cols-2 gap-5">
       <div class="form-group" :class="status($v.addressForm.first_name)">
         <label for="firstName">Име</label>
         <input
@@ -82,7 +82,7 @@
         </transition>
       </div>
     </div>
-    <div class="grid gap-5 grid-cols-2">
+    <div class="grid grid-cols-2 gap-5">
       <div class="form-group" :class="status($v.addressForm.city)">
         <label for="city">Град</label>
         <select id="city" v-model="$v.addressForm.city.$model">
@@ -120,7 +120,7 @@
       </div>
     </div>
     <div class="block">
-      <div class="font-medium text-sm text-gray-600 mb-1 block">
+      <div class="block mb-1 text-sm font-medium text-gray-600">
         <input
           id="isDefault"
           type="checkbox"
@@ -128,7 +128,7 @@
         />
         <label for="isDefault" class="text-sm">Предпочитан Адрес</label>
       </div>
-      <div class="font-medium text-sm text-gray-600 mb-1 block">
+      <div class="block mb-1 text-sm font-medium text-gray-600">
         <input
           id="hasCompany"
           type="checkbox"
@@ -137,7 +137,7 @@
         <label for="hasCompany" class="text-sm"> Данни за фирма </label>
       </div>
     </div>
-    <div class="grid gap-5 grid-cols-2" v-if="addressForm.has_company">
+    <div class="grid grid-cols-2 gap-5" v-if="addressForm.has_company">
       <div class="form-group" :class="status($v.addressForm.company_name)">
         <label for="companyName">Име на фирма</label>
         <input
@@ -183,7 +183,7 @@
       :disabled="pending"
       :class="{ pending: pending }"
       type="submit"
-      class="flex flex-row flex-wrap items-center justify-center w-full py-3 mt-2 text-lg font-semibold text-gray-300 transition-all duration-200 outline-none focus:outline-none rounded-md hover:text-white bg-blue-accent hover:bg-blue-hover"
+      class="flex flex-row flex-wrap items-center justify-center w-full py-3 mt-2 text-lg font-semibold text-gray-300 transition-all duration-200 rounded-md outline-none focus:outline-none hover:text-white bg-blue-accent hover:bg-blue-hover"
     >
       {{ action === 'edit' ? 'Запази промените' : 'Създай нов адрес' }}
     </button>
@@ -227,8 +227,8 @@ export default {
       },
     }
   },
-  validations: {
-    addressForm: {
+  validations() {
+    const validations = {
       phone: {
         required,
         validPhone,
@@ -253,18 +253,30 @@ export default {
       postcode: {},
       is_default: {},
       has_company: {},
-      company_name: {
-        required: requiredIf(function () {
-          return this.has_company
-        }),
-      },
-      vat_id: {
-        required: requiredIf(function () {
-          return this.has_company
-        }),
-        validVatId,
-      },
-    },
+    }
+
+    if (!this.addressForm.has_company) {
+      return {
+        addressForm: {
+          ...validations,
+          company_name: {},
+          vat_id: {},
+        },
+      }
+    } else {
+      return {
+        addressForm: {
+          ...validations,
+          company_name: {
+            required,
+          },
+          vat_id: {
+            required,
+            validVatId,
+          },
+        },
+      }
+    }
   },
   created() {
     if (this.address && this.action === 'edit') {
@@ -333,8 +345,8 @@ export default {
     },
     status(validation) {
       return {
-        error: validation ? validation.$error : null,
-        dirty: validation ? validation.$dirty : null,
+        dirty: validation.$dirty,
+        error: validation.$error,
       }
     },
   },

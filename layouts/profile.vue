@@ -6,7 +6,15 @@
       <div class="container py-10">
         <div class="flex flex-row flex-wrap">
           <ProfileNavigation />
-          <Nuxt />
+          <transition
+            name="slide-right"
+            mode="out-in"
+            @beforeLeave="beforeLeave"
+            @enter="enter"
+            @afterEnter="afterEnter"
+          >
+            <Nuxt />
+          </transition>
         </div>
       </div>
     </section>
@@ -28,12 +36,21 @@ export default {
     Header,
     Footer,
   },
+  data() {
+    return {
+      prevHeight: 0,
+    }
+  },
   created() {
-    this.getUser()
+    this.shouldGetUser()
     this.getAddresses()
 
     this.$nuxt.$on('updated-address', () => {
       this.getAddresses()
+    })
+
+    this.$nuxt.$on('user-changed', () => {
+      this.getUser()
     })
   },
   methods: {
@@ -44,21 +61,24 @@ export default {
     logout() {
       return this.$auth.logout()
     },
-    async getUser() {
+    shouldGetUser() {
       if (!this.$auth.loggedIn) {
         return this.logout()
       }
 
       if (!this.$auth.user || !Object.keys(this.$auth.user).length) {
-        return await this.$axios
-          .$get('/api/customer/get?token=true')
-          .then((res) => {
-            this.$auth.setUser(res.data)
-          })
-          .catch((err) => this.logout())
+        this.getUser()
       }
 
       return this.$auth.user
+    },
+    async getUser() {
+      return await this.$axios
+        .$get('/api/customer/get?token=true')
+        .then((res) => {
+          this.$auth.setUser(res.data)
+        })
+        .catch((err) => this.logout())
     },
 
     async getAddresses() {
@@ -69,6 +89,21 @@ export default {
         })
         .catch((err) => console.error(err))
     },
+    beforeLeave(element) {
+      this.prevHeight = getComputedStyle(element).height
+    },
+    enter(element) {
+      const { height } = getComputedStyle(element)
+
+      element.style.height = this.prevHeight
+
+      setTimeout(() => {
+        element.style.height = height
+      })
+    },
+    afterEnter(element) {
+      element.style.height = 'auto'
+    },
   },
   mounted() {
     if (process.client) {
@@ -77,3 +112,27 @@ export default {
   },
 }
 </script>
+
+<style>
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition-duration: 0.5s;
+  transition-property: height, opacity, transform;
+  transition-timing-function: cubic-bezier(0.55, 0, 0.1, 1);
+  overflow: hidden;
+}
+
+.slide-left-enter,
+.slide-right-leave-active {
+  opacity: 0;
+  transform: translate(2em, 0);
+}
+
+.slide-left-leave-active,
+.slide-right-enter {
+  opacity: 0;
+  transform: translate(-2em, 0);
+}
+</style>

@@ -1,11 +1,11 @@
 <template>
-  <nav style="min-width: 250px">
+  <nav class="w-1/6">
     <ul>
       <li v-for="link in links" :key="link.title">
         <nuxt-link
           :to="link.href"
           :title="link.title"
-          class="profile-link flex w-full flex-row flex-no-wrap items-center text-md font-medium text-gray-600 py-3 px-2 hover:text-gray-700 transition-all duration-300"
+          class="flex flex-row flex-no-wrap items-center w-full px-2 py-3 font-medium text-gray-600 transition-all duration-300 profile-link text-md hover:text-gray-700"
           :class="{
             'text-blue-accent hover:text-blue-accent':
               $route.path === link.href ||
