@@ -15,13 +15,13 @@ export default {
   },
   methods: {
     async getProducts() {
+      const baseQuery = `?suitable=${process.env.ST_MEN},${process.env.ST_UNISEX}`
       await this.$axios
-        .$get(
-          `/api/products?suitable=${process.env.MEN_ATTRIBUTE_ID},${process.env.UNISEX_ATTRIBUTE_ID}`
-        )
+        .$get(`/api/products${baseQuery}`)
         .then((res) => {
-          this.products = res
+          this.products = res.data
           this.pending = false
+          this.$store.dispatch('changeBaseQuery', baseQuery)
         })
         .catch((err) => {
           this.products = null
@@ -31,6 +31,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch('changeBaseQuery', null)
     this.getProducts()
   },
 }

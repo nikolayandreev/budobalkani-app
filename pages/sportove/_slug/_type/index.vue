@@ -15,32 +15,32 @@ export default {
     }
   },
   validate({ params, query, store }) {
-    return store.state.tags.find((elem) => elem.slug === params.tag)
+    return (
+      store.state.productTypes.some((elem) => elem.slug === params.type) &&
+      store.state.categories.some((elem) => elem.slug === params.slug)
+    )
   },
   computed: {
-    tag() {
-      return this.$store.state.tags.find(
-        (elem) => elem.slug === this.$route.params.tag
-      )
-    },
     category() {
       return this.$store.state.categories.find(
         (elem) => elem.slug === this.$route.params.slug
       )
     },
-    requiredFilters() {
-      return `status=publish&stock_status=instock`
+    type() {
+      return this.$store.state.productTypes.find(
+        (elem) => elem.slug === this.$route.params.type
+      )
     },
   },
   methods: {
     async getProducts() {
+      const baseQuery = `?categories=${this.category.id}&product_type=${this.type.id}`
       await this.$axios
-        .$get(
-          `/wp-json/wc/v3/products?category=${this.category.id}&tag=${this.tag.id}&${this.requiredFilters}`
-        )
+        .$get(`/api/products${baseQuery}`)
         .then((res) => {
-          this.products = res
+          this.products = res.data
           this.pending = false
+          this.$store.dispatch('changeBaseQuery', baseQuery)
         })
         .catch((err) => {
           this.products = null
@@ -50,6 +50,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch('changeBaseQuery', null)
     this.getProducts()
   },
 }

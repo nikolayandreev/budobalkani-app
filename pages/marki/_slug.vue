@@ -1,6 +1,6 @@
 <template>
   <div>
-    <pre>{{ term }}</pre>
+    <pre>{{ brand }}</pre>
     <pre>{{ products }}</pre>
   </div>
 </template>
@@ -15,27 +15,25 @@ export default {
     }
   },
   async validate({ params, $axios, store }) {
-    return store.state.brands.some((elem) => elem.slug === params.slug)
+    return store.state.brands.some((elem) => elem.label === params.slug)
   },
   computed: {
-    term() {
+    brand() {
       return this.$store.state.brands.find(
-        (elem) => elem.slug === this.$route.params.slug
+        (elem) => elem.label === this.$route.params.slug
       )
-    },
-    requiredFilters() {
-      return `status=publish&stock_status=instock`
     },
   },
   methods: {
     async getProducts() {
+      const baseQuery = `?brand=${this.brand.id}`
+
       await this.$axios
-        .$get(
-          `/wp-json/wc/v3/products?attribute=pa_marka&attribute_term=${this.term.id}&${this.requiredFilters}`
-        )
+        .$get(`/api/products${baseQuery}`)
         .then((res) => {
-          this.products = res
+          this.products = res.data
           this.pending = false
+          this.$store.dispatch('changeBaseQuery', baseQuery)
         })
         .catch((err) => {
           this.products = null
@@ -45,6 +43,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch('changeBaseQuery', null)
     this.getProducts()
   },
 }

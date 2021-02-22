@@ -23,19 +23,16 @@ export default {
         (elem) => elem.slug === this.$route.params.slug
       )
     },
-    requiredFilters() {
-      return `status=publish&stock_status=instock`
-    },
   },
   methods: {
     async getProducts() {
+      const baseQuery = `?categories=${this.category.id}`
       await this.$axios
-        .$get(
-          `/wp-json/wc/v3/products?category=${this.category.id}&${this.requiredFilters}`
-        )
+        .$get(`/api/products${baseQuery}`)
         .then((res) => {
-          this.products = res
+          this.products = res.data
           this.pending = false
+          this.$store.dispatch('changeBaseQuery', baseQuery)
         })
         .catch((err) => {
           this.products = null
@@ -45,6 +42,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch('changeBaseQuery', null)
     this.getProducts()
   },
 }
