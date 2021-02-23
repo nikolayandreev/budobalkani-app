@@ -38,7 +38,7 @@
             @click="closeSuggestions"
           >
             <nuxt-link
-              :to="`/produkti/${suggestion.slug}`"
+              :to="`/produkti/${suggestion.url_key}`"
               :title="suggestion.name"
               class="flex flex-row items-center w-full px-5 py-3 overflow-hidden transition-all duration-200 border-b border-gray-200 flex-nowrap search-result hover:bg-gray-300"
             >
@@ -136,11 +136,6 @@ export default {
       }
     },
   },
-  computed: {
-    requiredFilters() {
-      return `status=publish`
-    },
-  },
   methods: {
     highlight(string) {
       const substring = new RegExp(this.search, 'gi')
@@ -174,14 +169,10 @@ export default {
       this.pending = true
 
       this.$axios
-        .$get(
-          `/wp-json/wc/v3/products?per_page=10&${
-            this.requiredFilters
-          }&search=${this.sanitizeInput(this.search)}`
-        )
+        .$get(`/api/products?search=${this.sanitizeInput(this.search)}`)
         .then((res) => {
-          if (res && res.length) {
-            this.suggestions = res
+          if (res && res.data.length) {
+            this.suggestions = res.data
             this.noResults = false
           } else {
             this.suggestions = null
