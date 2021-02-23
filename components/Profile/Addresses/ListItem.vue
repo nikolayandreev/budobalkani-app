@@ -1,5 +1,5 @@
 <template>
-  <div class="item deafult" v-if="address">
+  <div class="item deafult" v-if="address" :class="{ deleting }">
     <h4
       class="w-full mb-2 text-pink-600 uppercase font-medium text-xs"
       v-if="address.is_default"
@@ -76,14 +76,22 @@ export default {
       required: false,
     },
   },
+  data() {
+    return {
+      deleting: false,
+    }
+  },
   methods: {
     deleteAddress(id) {
-      this.$axios
-        .$delete(`/api/addresses/${id}?token=true`)
-        .then((res) => {
-          this.$nuxt.$emit('updated-address')
-        })
-        .catch((err) => console.error(err))
+      this.deleting = true
+      setTimeout(() => {
+        return this.$axios
+          .$delete(`/api/addresses/${id}?token=true`)
+          .then((res) => {
+            this.$nuxt.$emit('updated-address')
+          })
+          .catch((err) => console.error(err))
+      }, 200)
     },
   },
 }
@@ -91,10 +99,28 @@ export default {
 
 <style scoped lang="scss">
 .item {
-  @apply w-full flex flex-row flex-wrap py-4 border-b border-gray-300;
+  @apply relative w-full flex flex-row flex-wrap py-4 border-b border-gray-300;
+  &:before {
+    content: '';
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0px;
+    right: 0;
+    transition: width 0.5s;
+  }
 }
 
 .item.default {
   @apply bg-red-100;
+}
+.deleting {
+  &:before {
+    width: 100%;
+    opacity: 1;
+    @apply bg-red-600;
+  }
 }
 </style>

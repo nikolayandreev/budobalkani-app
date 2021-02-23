@@ -19,19 +19,16 @@ export default {
       d.setMonth(d.getMonth() - 1)
       return d.toISOString()
     },
-    requiredFilters() {
-      return `status=publish&stock_status=instock`
-    },
   },
   methods: {
     async getProducts() {
+      const baseQuery = `?new=1`
       await this.$axios
-        .$get(
-          `/wp-json/wc/v3/products?after=${this.dateLatest}&${this.requiredFilters}`
-        )
+        .$get(`/api/products${baseQuery}`)
         .then((res) => {
-          this.products = res
+          this.products = res.data
           this.pending = false
+          this.$store.dispatch('changeBaseQuery', baseQuery)
         })
         .catch((err) => {
           this.products = null

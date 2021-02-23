@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     async getProducts() {
-      const baseQuery = `?categories=${this.category.id}&product_type=${this.type.id}`
+      const baseQuery = `?category_id=${this.category.id}&product_type=${this.type.id}`
       await this.$axios
         .$get(`/api/products${baseQuery}`)
         .then((res) => {

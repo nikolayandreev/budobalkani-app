@@ -21,3 +21,12 @@ button.pending {
   transition: all 0.3s;
   pointer-events: none;
 }
+
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 0.2s;
+}
+.layout-enter,
+.layout-leave-active {
+  opacity: 0;
+}

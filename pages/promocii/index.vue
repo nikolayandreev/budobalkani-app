@@ -20,11 +20,13 @@ export default {
   },
   methods: {
     async getProducts() {
+      const baseQuery = `?special_price=0,9999999`
       await this.$axios
-        .$get(`/wp-json/wc/v3/products?on_sale=1&${this.requiredFilters}`)
+        .$get(`/api/products${baseQuery}`)
         .then((res) => {
-          this.products = res
+          this.products = res.data
           this.pending = false
+          this.$store.dispatch('changeBaseQuery', baseQuery)
         })
         .catch((err) => {
           this.products = null
@@ -34,6 +36,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch('changeBaseQuery', null)
     this.getProducts()
   },
 }

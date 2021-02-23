@@ -43,6 +43,11 @@ export default {
     '@nuxtjs/auth-next',
   ],
 
+  layoutTransition: {
+    name: 'layout',
+    mode: 'out-in',
+  },
+
   auth: {
     strategies: {
       local: {
