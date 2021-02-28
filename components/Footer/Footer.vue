@@ -1,7 +1,7 @@
 <template>
   <footer class="border-t boder-gray-300">
     <div class="container">
-      <div class="relative flex flex-row flex-wrap w-full py-6">
+      <div class="flex flex-row flex-wrap w-full py-6">
         <nav class="w-1/3" v-for="col in footerLinks" :key="col.title">
           <h4 class="mb-4 text-lg font-semibold text-blue-accent">
             {{ col.title }}

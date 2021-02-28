@@ -7,6 +7,7 @@
   >
     <div class="relative inline-block cursor-pointer">
       <svg
+        @click="goToWishlist"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -27,6 +28,7 @@
       >
     </div>
     <span
+      @click="goToWishlist"
       class="font-semibold text-gray-300 cursor-pointer group-hover:text-white"
       >Любими</span
     >
@@ -195,6 +197,9 @@ export default {
     removeFromWishlist(id) {
       this.$store.dispatch('wishlist/removeFromWishlist', id)
       this.$store.dispatch('wishlist/updateWishlist')
+    },
+    goToWishlist() {
+      this.$router.push('/lubimi')
     },
   },
   computed: {
