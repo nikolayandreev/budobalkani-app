@@ -7,6 +7,7 @@
   >
     <div class="relative inline-block cursor-pointer">
       <svg
+        @click="goToCart"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -27,6 +28,7 @@
       >
     </div>
     <span
+      @click="goToCart"
       class="font-semibold text-gray-300 cursor-pointer group-hover:text-white"
       >Моята Количка</span
     >
@@ -191,6 +193,9 @@ export default {
       const index = this.cart.findIndex((elem) => elem.id === id)
       return this.cart.splice(index, 1)
     },
+    goToCart() {
+      this.$router.push('/cart')
+    },
   },
   watch: {
     cart(val) {
@@ -213,28 +218,6 @@ export default {
     requiredFilters() {
       return `status=publish&stock_status=instock`
     },
-  },
-  mounted() {
-    // this.$axios
-    //   .$get(`/api/products`)
-    //   .then((res) => {
-    //     this.cart = res.map((elem) => {
-    //       return {
-    //         quantity: 1,
-    //         id: elem.id,
-    //         slug: elem.slug,
-    //         name: elem.name,
-    //         images: elem.images,
-    //         price: elem.price,
-    //         regular_price: elem.regular_price,
-    //         sale_price: elem.sale_price,
-    //         on_sale: elem.on_sale,
-    //       }
-    //     })
-    //   })
-    //   .catch((err) => {
-    //     console.error(err)
-    //   })
   },
 }
 </script>

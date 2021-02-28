@@ -15,7 +15,10 @@ export default {
       { rel: 'preconnect', href: process.env.API_URL },
     ],
   },
-
+  loading: {
+    color: '#c3c3c3',
+    height: '5px'
+  },
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: ['@/assets/css/fonts.css', '@/assets/css/styles.scss'],
 

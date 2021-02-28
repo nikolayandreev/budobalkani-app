@@ -35,6 +35,7 @@ module.exports = {
     borderRadius: ['first', 'last'],
     opacity: ['group-hover', 'group-focus'],
     display: ['hover', 'group-hover', 'group-focus', 'responsive'],
+    borderWidth: ['responsive', 'last', 'first']
   },
   plugins: [],
 }

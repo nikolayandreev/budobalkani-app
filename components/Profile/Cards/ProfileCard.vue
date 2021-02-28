@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-row flex-wrap w-full shadow-md rounded-md overflow-hidden bg-white"
+    class="flex flex-row flex-wrap w-full overflow-hidden bg-white rounded-md shadow-md"
   >
     <div v-if="!Object.keys(user).length" class="w-full px-5 py-4">
       <span class="text-sm text-gray-600">
@@ -9,18 +9,17 @@
     </div>
 
     <div
-      class="wrapper w-full py-4 px-5 text-sm text-gray-700"
+      class="w-full px-5 py-4 text-sm text-gray-700 wrapper"
       v-if="Object.keys(user).length"
     >
       <h1 class="w-full mb-3 font-semibold">Данни на акаунта</h1>
 
       <div class="flex flex-row flex-no-wrap items-start">
-        <div class="w-auto self-center">
+        <div class="self-center w-auto">
           <span
-            class="rounded-full px-10 py-8 inline-block mr-5 bg-blue-accent text-white uppercase font-medium"
+            class="inline-block px-8 py-4 mr-5 text-4xl font-medium text-white uppercase rounded-full bg-blue-accent"
+            >{{ user.first_name[0] }}</span
           >
-            {{ user.first_name[0] }}
-          </span>
         </div>
         <div class="w-full">
           <h4 class="text-lg font-medium text-gray-900">{{ user.name }}</h4>
@@ -30,7 +29,7 @@
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                class="w-5 h-5 text-blue-400 mr-1"
+                class="w-5 h-5 mr-1 text-blue-400"
                 stroke="currentColor"
               >
                 <path
@@ -46,7 +45,7 @@
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
-                class="w-5 h-5 text-blue-400 mr-1"
+                class="w-5 h-5 mr-1 text-blue-400"
                 fill="currentColor"
               >
                 <path
@@ -63,7 +62,7 @@
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
-                class="w-5 h-5 text-blue-400 mr-1"
+                class="w-5 h-5 mr-1 text-blue-400"
                 stroke="currentColor"
               >
                 <path
@@ -79,11 +78,11 @@
             </div>
           </div>
         </div>
-        <div class="w-40 text-center self-center border-l pl-5 ml-5">
+        <div class="self-center w-40 pl-5 ml-5 text-center border-l">
           <span class="block text-xs">
             Благодарим ти, че си наш клиент от
           </span>
-          <span class="block text-gray-900 mt-2 text-lg font-medium">
+          <span class="block mt-2 text-lg font-medium text-gray-900">
             {{ user.created_at_formatted }}
           </span>
         </div>
@@ -93,7 +92,7 @@
     <nuxt-link
       :to="`/profile/redaktirane`"
       title="Редактирай своите лични данни"
-      class="self-end border-t w-full block text-center py-2 bg-white text-blue-600 hover:text-blue-800 text-md hover:bg-gray-200"
+      class="self-end block w-full py-2 text-center text-blue-600 bg-white border-t hover:text-blue-800 text-md hover:bg-gray-200"
     >
       Редактирай своите лични данни
     </nuxt-link>

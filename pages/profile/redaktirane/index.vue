@@ -98,7 +98,7 @@ export default {
     },
     async editCustomer() {
       await this.$axios
-        .$put(`/api/customer/profile`, this.profileForm)
+        .$put(`/api/customer/profile?token=true`, this.profileForm)
         .then((res) => {
           this.$nuxt.$emit('user-changed')
           this.pending = false
@@ -127,15 +127,15 @@ export default {
       this.setUserValues(val)
     },
   },
-  created() {
-    if (Object.keys(this.user).length) {
-      this.setUserValues(this.user)
-    }
-  },
   computed: {
     user() {
       return this.$auth.user
     },
+  },
+  created() {
+    if (Object.keys(this.user).length) {
+      this.setUserValues(this.user)
+    }
   },
 }
 </script>
