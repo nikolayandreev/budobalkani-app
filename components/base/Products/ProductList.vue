@@ -1,6 +1,7 @@
 <template>
   <section class="products" v-if="products">
-    <!-- <div>{{ products.data }}</div> -->
+    <pre>{{ products }}</pre>
+
     <div></div>
   </section>
 </template>
